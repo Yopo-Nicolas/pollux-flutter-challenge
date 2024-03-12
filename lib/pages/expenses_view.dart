@@ -1,7 +1,7 @@
 import 'dart:math';
-
+import "package:collection/collection.dart";
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pollux_flutter_challenge/models/expense_model.dart';
 
 class ExpensesView extends StatefulWidget {
@@ -28,17 +28,27 @@ class _ExpensesViewState extends State<ExpensesView> {
       height: 20,
     );
 
-    List<charts.Series<Expense, String>> series = [
-      charts.Series(
-        id: "Expenses",
-        data: widget.expenses,
-        domainFn: (Expense expense, _) => expense.category,
-        measureFn: (Expense expense, _) => expense.amount,
-        colorFn: (Expense expense, _) =>
-            charts.ColorUtil.fromDartColor(Color(Random().nextInt(0xffffffff))),
-        labelAccessorFn: (Expense expense, _) =>
-            '\$${expense.amount.toStringAsFixed(2)}',
-      ),
+    Map<String, List<Expense>> groupedExpenses =
+        groupBy(widget.expenses, (Expense expense) => expense.category);
+
+    late List<Expense> expensesByCategory = [];
+
+    groupedExpenses.forEach((key, value) {
+      double categoryValue = 0;
+      for (var element in value) {
+        categoryValue += element.amount;
+      }
+      Expense newExpense = Expense(
+          description: 'Grouped $key', category: key, amount: categoryValue);
+      expensesByCategory.add(newExpense);
+    });
+
+    List<PieChartSectionData> series = [
+      ...expensesByCategory.map((expense) => PieChartSectionData(
+          color: Color(Random().nextInt(0xffffffff)),
+          value: expense.amount,
+          title: expense.category,
+          titleStyle: const TextStyle(fontSize: 12)))
     ];
 
     return Scaffold(
@@ -77,7 +87,10 @@ class _ExpensesViewState extends State<ExpensesView> {
                   width: MediaQuery.sizeOf(context).width - 100,
                   height: 300,
                   padding: const EdgeInsets.all(10.0),
-                  child: charts.PieChart(series, animate: true),
+                  child: PieChart(PieChartData(
+                      sections: series,
+                      centerSpaceRadius: 40,
+                      sectionsSpace: 2)),
                 ),
                 Expanded(
                   child: ListView.builder(
