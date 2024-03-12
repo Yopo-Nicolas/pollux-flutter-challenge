@@ -47,8 +47,9 @@ class _ExpensesViewState extends State<ExpensesView> {
       ...expensesByCategory.map((expense) => PieChartSectionData(
           color: Color(Random().nextInt(0xffffffff)),
           value: expense.amount,
-          title: expense.category,
-          titleStyle: const TextStyle(fontSize: 12)))
+          title: '${expense.category} \n \$${expense.amount}',
+          titleStyle:
+              const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)))
     ];
 
     return Scaffold(
@@ -89,69 +90,69 @@ class _ExpensesViewState extends State<ExpensesView> {
                   padding: const EdgeInsets.all(10.0),
                   child: PieChart(PieChartData(
                       sections: series,
-                      centerSpaceRadius: 40,
-                      sectionsSpace: 2)),
+                      centerSpaceRadius: double.infinity,
+                      sectionsSpace: 10)),
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: widget.expenses.length,
-                    itemBuilder: (context, index) {
-                      final expense = widget.expenses[index];
-                      return Dismissible(
-                          key: UniqueKey(),
-                          direction: DismissDirection.startToEnd,
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child:
-                                const Icon(Icons.delete, color: Colors.white),
-                          ),
-                          confirmDismiss: (direction) async {
-                            final listItem = widget.expenses[index];
-                            if (direction == DismissDirection.startToEnd) {
-                              setState(() {
-                                widget.expenses.removeAt(index);
-                              });
-                            }
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${listItem.category} dismissed'),
-                                action: SnackBarAction(
-                                  label: 'Undo',
-                                  onPressed: () {
-                                    setState(() {
-                                      widget.expenses.insert(index, listItem);
-                                    });
-                                  },
-                                ),
-                              ),
-                            );
-
-                            if (widget.expenses[index] == listItem) {
-                              return false;
-                            }
-
-                            return true;
-                          },
-                          onDismissed: (direction) {
-                            setState(() {
-                              widget.onExpenseDelete(index);
-                            });
-                          },
-                          child: GestureDetector(
-                            onTap: () {
-                              widget.onExpenseTap(expense);
-                            },
-                            child: ListTile(
-                              title: Text(expense.description),
-                              subtitle: Text(
-                                  '\$${expense.amount.toStringAsFixed(2)}'),
+                      itemCount: widget.expenses.length,
+                      itemBuilder: (context, index) {
+                        final expense = widget.expenses[index];
+                        return Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.startToEnd,
+                            background: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20.0),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.white),
                             ),
-                          ));
-                    },
-                  ),
+                            confirmDismiss: (direction) async {
+                              final listItem = widget.expenses[index];
+                              if (direction == DismissDirection.startToEnd) {
+                                setState(() {
+                                  widget.expenses.removeAt(index);
+                                });
+                              }
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('${listItem.category} dismissed'),
+                                  action: SnackBarAction(
+                                    label: 'Undo',
+                                    onPressed: () {
+                                      setState(() {
+                                        widget.expenses.insert(index, listItem);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+
+                              if (widget.expenses[index] == listItem) {
+                                return false;
+                              }
+
+                              return true;
+                            },
+                            onDismissed: (direction) {
+                              setState(() {
+                                widget.onExpenseDelete(index);
+                              });
+                            },
+                            child: GestureDetector(
+                              onTap: () {
+                                widget.onExpenseTap(expense);
+                              },
+                              child: ListTile(
+                                title: Text(expense.description),
+                                subtitle: Text(
+                                    '\$${expense.amount.toStringAsFixed(2)}'),
+                              ),
+                            ));
+                      }),
                 )
               ],
             ),
