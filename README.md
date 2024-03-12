@@ -1,16 +1,18 @@
 # pollux_flutter_challenge
 
-A new Flutter project.
+## Pantalla Inicial
 
-## Getting Started
+### Si no tiene gastos
 
-This project is a starting point for a Flutter application.
+    - Mostrar una imagen, un texto y un botón para agregar gastos.
 
-A few resources to get you started if this is your first Flutter project:
+### Si tiene gastos
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+    - Mostrar un grafico de torta por categorias.
+    - Mostrar el listado de gastos
+        - Al deslizar un gasto que se borre con 3 segundos de posibilidad para deshacer.
+        - Poder editar gastos existentes.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Pantalla de agregar gasto
+
+    - Descripcion, categoria y monto
